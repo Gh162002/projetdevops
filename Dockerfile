@@ -1,5 +1,5 @@
 # Use an official OpenJDK 17 image as the base
-FROM openjdk:17-slim
+FROM openjdk:17-jdk-slim
 
 # Define an argument for the JAR file name (optional, but good practice)
 ARG JAR_FILE=target/*.jar
