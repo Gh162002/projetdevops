@@ -1,7 +1,7 @@
 # Use an official OpenJDK 17 image as the base
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-slim
 
-# Define an argument for the JAR file name (optional, but good practice)
+# Define an argument for the JAR file name
 ARG JAR_FILE=target/*.jar
 
 # Copy the application's JAR file into the container
