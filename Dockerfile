@@ -1,11 +1,11 @@
-# Use OpenJDK 17 slim image
+# Use an official OpenJDK 17 image as the base
 FROM openjdk:17-slim
 
-# Argument pour le JAR
+# Define an argument for the JAR file name (optional, but good practice)
 ARG JAR_FILE=target/*.jar
 
-# Copier le JAR dans le conteneur
+# Copy the application's JAR file into the container
 COPY ${JAR_FILE} app.jar
 
-# Point d'entrée
+# Define the entry point to run the application
 ENTRYPOINT ["java", "-jar", "/app.jar"]
