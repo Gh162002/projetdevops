@@ -18,6 +18,7 @@ pipeline {
         }
           stage('Compiling the artifact') {             
             steps {
+                 dir('projetdevops') {
                 echo "compiling"
                 sh 'mvn compile'
             }
