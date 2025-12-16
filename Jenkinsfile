@@ -6,45 +6,46 @@ pipeline {
     }
 
     environment {
-        DOCKER_USERNAME = 'Gh162002'
-        IMAGE_NAME      = 'projetdevops'
+        IMAGE_NAME = 'projetdevops'
+        DOCKER_USER = 'Gh162002'
     }
 
     stages {
-        stage('Checkout GITT') {
+        stage('Checkout GIT') {
             steps {
-                echo 'Pulling code...'
-                git branch: 'ghada', url: 'https://github.com/Gh162002/projetdevops.git'
+                git branch: 'ghada',
+                    url: 'https://github.com/Gh162002/projetdevops.git'
             }
         }
 
-        stage('Compiling the artifact') {
+        stage('Clean') {
+            steps {
+                sh 'mvn clean'          // rapide, garantit un build propre
+            }
+        }
+
+        stage('Compiling') {
             steps {
                 sh 'mvn compile'
             }
         }
 
-        stage('mvn SonarQube') {
+        stage('SonarQube') {
             steps {
-                withCredentials([string(credentialsId: 'token-sonar', variable: 'SONAR_TOKEN')]) {
+                withCredentials([string(credentialsId: 'token-sonar',
+                                        variable: 'SONAR_TOKEN')]) {
                     sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
                 }
             }
         }
 
-        stage('Package JAR') {
-            steps {
-                sh 'mvn clean package -DskipTests'
-            }
-        }
-
-        stage('Build Docker Image') {
+        stage('Build image') {
             steps {
                 sh "docker build -t ${IMAGE_NAME} ."
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Push Docker') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-token',
                                                   usernameVariable: 'DOCKER_USER',
