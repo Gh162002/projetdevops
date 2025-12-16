@@ -1,14 +1,15 @@
 pipeline {
     agent any
     tools {
-        maven "M2_HOME"
-        jdk "JAVA_HOME"
+        maven 'M2_HOME'
+        jdk 'JAVA_HOME'
     }
 
-    environment{
-        DOCKER_USERNAME = "Gh162002"
-        DOCKER_PASSWORD = "123456"
+    environment {
+        DOCKER_USERNAME = 'Gh162002'
+        IMAGE_NAME      = 'projetdevops'
     }
+
     stages {
         stage('Checkout GITT') {
             steps {
@@ -16,48 +17,58 @@ pipeline {
                 git branch: 'ghada', url: 'https://github.com/Gh162002/projetdevops.git'
             }
         }
-          stage('Compiling the artifact') {             
+
+        stage('Compiling the artifact') {
             steps {
-                 dir('projetdevops') {
-                echo "compiling"
-                sh 'mvn compile'
+                dir('projetdevops') {
+                    echo 'Compiling'
+                    sh 'mvn compile'
+                }
             }
         }
+
         stage('mvn SonarQube') {
             steps {
-                script {
-                       withCredentials ([string(credentialsId: 'token-sonar', variable: 'sonar')]){
-                           sh "mvn sonar:sonar -Dsonar.login=${sonar}"}
-                
-               
+                dir('projetdevops') {
+                    script {
+                        withCredentials([string(credentialsId: 'token-sonar', variable: 'SONAR_TOKEN')]) {
+                            sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
+                        }
+                    }
                 }
             }
         }
 
         stage('Package JAR') {
-    steps {
-        sh 'mvn clean package -DskipTests'
-    }
-}
-             
-
-        stage('Build image') {             
             steps {
-                sh "docker build -t image ."
+                dir('projetdevops') {
+                    sh 'mvn clean package -DskipTests'
+                }
             }
         }
-        
-        stage('Push Docker Image') {
-           steps {
-              withCredentials([usernamePassword(credentialsId: 'docker-token', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
-                sh "docker tag image ${DOCKER_USERNAME}/image:latest"
-                sh "docker push ${DOCKER_USERNAME}/image:latest"
-              }
-           }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('projetdevops') {
+                    sh "docker build -t ${IMAGE_NAME} ."
+                }
+            }
         }
 
-
-
+        stage('Push Docker Image') {
+            steps {
+                dir('projetdevops') {
+                    withCredentials([usernamePassword(credentialsId: 'docker-token',
+                                                      usernameVariable: 'DOCKER_USER',
+                                                      passwordVariable: 'DOCKER_PASS')]) {
+                        sh """
+                            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+                            docker tag ${IMAGE_NAME} ${DOCKER_USER}/${IMAGE_NAME}:latest
+                            docker push ${DOCKER_USER}/${IMAGE_NAME}:latest
+                        """
+                    }
+                }
+            }
+        }
     }
 }
