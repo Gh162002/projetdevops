@@ -11,20 +11,20 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <!-- ================= PROPERTIES ================= -->
+    <!-- ===================== -->
+    <!-- PROPERTIES -->
+    <!-- ===================== -->
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!-- JAVA 17 (compatible Jenkins + Docker) -->
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-
-        <!-- JavaFX compatible Java 17 -->
-        <javafx.version>17.0.10</javafx.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javafx.version>17.0.9</javafx.version>
     </properties>
 
-    <!-- ================= DEPENDENCIES ================= -->
+    <!-- ===================== -->
+    <!-- DEPENDENCIES -->
+    <!-- ===================== -->
     <dependencies>
 
         <!-- JavaFX -->
@@ -40,30 +40,33 @@
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- MySQL JDBC -->
+        <!-- MySQL Connector -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <version>8.3.0</version>
+            <version>8.4.0</version>
         </dependency>
 
     </dependencies>
 
-    <!-- ================= BUILD ================= -->
+    <!-- ===================== -->
+    <!-- BUILD -->
+    <!-- ===================== -->
     <build>
         <plugins>
 
-            <!-- Compiler plugin -->
+            <!-- Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>17</release>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
 
-            <!-- JavaFX plugin (run locally if needed) -->
+            <!-- JavaFX Plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -73,7 +76,7 @@
                 </configuration>
             </plugin>
 
-            <!-- JAR AVEC DÉPENDANCES (POUR DOCKER) -->
+            <!-- Fat JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
