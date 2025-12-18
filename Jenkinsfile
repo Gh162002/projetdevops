@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'projetdevops'
-        DOCKER_USER = 'Gh162002'
+        DOCKER_USER = 'ghada1601'
     }
 
     stages {
@@ -58,12 +58,12 @@ pipeline {
                                           usernameVariable: 'DOCKER_USER',
                                           passwordVariable: 'DOCKER_PASS')]) {
             sh '''
-                docker login -u $DOCKER_USER --password-stdin <<< "$DOCKER_PASS"
-                docker tag projetdevops $DOCKER_USER/projetdevops:latest
-                docker push $DOCKER_USER/projetdevops:latest
+                echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                docker tag projetdevops ghada1601/projetdevops:latest
+                docker push ghada1601/projetdevops:latest
             '''
+                 }
+            }
         }
-    }
-}
     }
 }
