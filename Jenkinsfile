@@ -53,17 +53,17 @@ pipeline {
         }
 
         stage('Push Docker') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-token',
-                                                  usernameVariable: 'DOCKER_USER',
-                                                  passwordVariable: 'DOCKER_PASS')]) {
-                    sh """
-                        docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-                        docker tag ${IMAGE_NAME} ${DOCKER_USER}/${IMAGE_NAME}:latest
-                        docker push ${DOCKER_USER}/${IMAGE_NAME}:latest
-                    """
-                }
-            }
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'docker-token',
+                                          usernameVariable: 'DOCKER_USER',
+                                          passwordVariable: 'DOCKER_PASS')]) {
+            sh '''
+                docker login -u $DOCKER_USER --password-stdin <<< "$DOCKER_PASS"
+                docker tag projetdevops $DOCKER_USER/projetdevops:latest
+                docker push $DOCKER_USER/projetdevops:latest
+            '''
         }
+    }
+}
     }
 }
