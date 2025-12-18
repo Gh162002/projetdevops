@@ -1,11 +1,7 @@
-# Use an official OpenJDK 17 image as the base
-FROM openjdk:17-jdk-slim
-
-# Define an argument for the JAR file name (optional, but good practice)
-ARG JAR_FILE=target/*.jar
-
-# Copy the application's JAR file into the container
-COPY ${JAR_FILE} app.jar
-
-# Define the entry point to run the application
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+FROM alpine:latest
+RUN apk add --no-cache bash
+COPY java17 /opt/java17
+ENV JAVA_HOME=/opt/java17
+ENV PATH=$PATH:$JAVA_HOME/bin
+COPY target/app.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
