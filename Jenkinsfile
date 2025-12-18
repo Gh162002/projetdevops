@@ -14,13 +14,13 @@ pipeline {
         stage('Checkout GIT') {
             steps {
                 git branch: 'ghada',
-                    url: 'https://github.com/Gh162002/projetdevops.git '
+                    url: 'https://github.com/Gh162002/projetdevops.git'
             }
         }
 
         stage('Clean') {
             steps {
-                sh 'mvn clean'          // rapide, garantit un build propre
+                sh 'mvn clean'
             }
         }
 
@@ -36,6 +36,13 @@ pipeline {
                                         variable: 'SONAR_TOKEN')]) {
                     sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}"
                 }
+            }
+        }
+
+        stage('Package JAR') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+                sh 'cp target/*-jar-with-dependencies.jar target/app.jar'
             }
         }
 
